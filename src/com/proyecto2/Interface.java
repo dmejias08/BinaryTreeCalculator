@@ -1,11 +1,16 @@
 package com.proyecto2;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class Interface extends JFrame {
+public class Interface extends JFrame implements KeyListener {
+    int openParen=0, closeParen=0;
+    String frozenText;
     JPanel pane;
     Button key0;
     Button key1;
@@ -42,6 +47,7 @@ public class Interface extends JFrame {
         operation = new JTextField(20);
         operation.setSize(270, 40);
         operation.setLocation(10, 10);
+        operation.addKeyListener(this);
         pane.add(operation);
 
         //Definición de botones
@@ -66,6 +72,59 @@ public class Interface extends JFrame {
         keyDelAll = new Button(this,"AC",210,160,20);
         keyEq = new Button(this,"=",210,210,20);
     }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        char key = e.getKeyChar();
+        char last = 0;
+        if (key>=37 && key<=57 && key!=44 && key!=46 && key!=38 && key!=39) {
+            frozenText=operation.getText();
+            if (!operation.getText().equals("")) {
+                last = operation.getText().charAt(operation.getCaretPosition()-1);
+            }
+            if (key>=42 && key<=47 && key!=45 && (last>=48 || last==41)) {
+
+            } else if (key==41 && openParen>closeParen && last>=48) {
+                closeParen++;
+            } else if (key==40 && ((last<=47 && last>41) || last==0 || last==40)){
+                openParen++;
+            } else if (key==45 && (last>=48 || last==41 || last==0) ) {
+            } else if (key==37 && last>=48) {
+            } else if (key>=48 && last!=41 && last!=37){
+            } else {
+                if (key>=42 && key<=47 && last<=47 && last>=42){
+                    try {
+                        operation.getDocument().remove(operation.getCaretPosition()-1, 1);
+                        operation.getDocument().insertString(operation.getCaretPosition(), ""+key,null);
+                    } catch (BadLocationException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                e.consume();
+            }
+        } else {
+            e.consume();
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == 8){
+            char last = 0;
+            if (!operation.getText().equals("")) {
+                last = frozenText.charAt(frozenText.length() - 1);
+            }
+            if (last==40){
+                openParen--;
+            } else if (last==41) {
+                closeParen--;
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
 }
 
 class Button implements ActionListener {
@@ -85,14 +144,57 @@ class Button implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
            if (e.getSource()==obj){
+               cInterface.frozenText = cInterface.operation.getText();
+               char key = opText.charAt(0);
+               char last = 0;
+               if (!cInterface.operation.getText().equals("")) {
+                   last = cInterface.operation.getText().charAt(cInterface.operation.getCaretPosition()-1);
+               }
                if (obj.getText()=="DEL"){
-                   cInterface.operation.setText(cInterface.operation.getText().replaceFirst(".$",""));
+                   if (last==40){
+                       cInterface.openParen--;
+                   } else if (last==41) {
+                       cInterface.closeParen--;
+                   }
+                   try {
+                       cInterface.operation.getDocument().remove(cInterface.operation.getCaretPosition()-1, 1);
+                   } catch (BadLocationException ex) {
+                       ex.printStackTrace();
+                   }
                } else if (obj.getText()=="AC") {
                    cInterface.operation.setText(null);
                } else if (obj.getText()=="="){
-                   //Prueba infix to posfix
+                   if (cInterface.openParen==cInterface.closeParen){
+                       System.out.println("Excelente");
+                   } else {
+                       JOptionPane.showMessageDialog(null, "La cantidad de parentesis abiertos no calza con los cerrados");
+                   }
                } else {
-                   cInterface.operation.setText(cInterface.operation.getText()+opText);
+                   if (key>=37 && key<=57 && key!=44 && key!=46 && key!=38 && key!=39) {
+                       try {
+                           if (key >= 42 && key <= 47 && key != 45 && (last >= 48 || last == 41)) {
+                               cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
+                           } else if (key == 41 && cInterface.openParen > cInterface.closeParen && last >= 48) {
+                               cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
+                               cInterface.closeParen++;
+                           } else if (key == 40 && ((last <= 47 && last > 41) || last == 0 || last == 40)) {
+                               cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
+                               cInterface.openParen++;
+                           } else if (key == 45 && (last >= 48 || last == 41 || last == 0)) {
+                               cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
+                           } else if (key == 37 && last >= 48) {
+                               cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
+                           } else if (key >= 48 && last != 41 && last != 37) {
+                               cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
+                           } else {
+                               if (key >= 42 && key <= 47 && last <= 47 && last >= 42) {
+                                   cInterface.operation.getDocument().remove(cInterface.operation.getCaretPosition()-1, 1);
+                               }
+                           }
+                       } catch (BadLocationException ex){
+                           ex.printStackTrace();
+                       }
+                   }
                }
            }
     }
