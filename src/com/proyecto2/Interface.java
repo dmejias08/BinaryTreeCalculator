@@ -10,7 +10,7 @@ import java.awt.event.KeyListener;
 
 public class Interface extends JFrame implements KeyListener {
     int openParen=0, closeParen=0;
-    String frozenText;
+    String frozenText, request="null";
     JPanel pane;
     Button key0;
     Button key1;
@@ -165,7 +165,7 @@ class Button implements ActionListener {
                    cInterface.operation.setText(null);
                } else if (obj.getText()=="="){
                    if (cInterface.openParen==cInterface.closeParen){
-                       System.out.println("Excelente");
+                       cInterface.request= cInterface.operation.getText();
                    } else {
                        JOptionPane.showMessageDialog(null, "La cantidad de parentesis abiertos no calza con los cerrados");
                    }

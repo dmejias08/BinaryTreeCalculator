@@ -8,14 +8,15 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client  {
+    private static Interface interfac;
     private static DataInputStream in;
     private static DataOutputStream out;
     private static Socket server;
     public static final int port = 9090;
 
     public static void main(String[] args) throws IOException {
-        Scanner sn = new Scanner(System.in);
-        sn.useDelimiter("\n");
+        interfac = new Interface();
+        interfac.repaint();
         server = new Socket("localhost",port);
         in = new DataInputStream(server.getInputStream());
         out = new DataOutputStream(server.getOutputStream());
@@ -23,10 +24,10 @@ public class Client  {
         try {
             while (true) {
                 System.out.println(">");
-                String request = sn.nextLine();
+                String request = interfac.request;
 //                out.writeUTF(request);
                 System.out.println("Request: " + request);
-                if (request.equals(null)) {
+                if (request.equals("null")) {
                     System.out.println("Request is null");
                     continue;
                 } else {
@@ -44,7 +45,6 @@ public class Client  {
 
             }
         }catch (Exception e) {
-            sn.close();
             in.close();
             out.close();
             e.printStackTrace();
