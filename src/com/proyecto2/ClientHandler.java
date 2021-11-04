@@ -7,6 +7,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Stack;
 
+/**
+ * Represents the handler of each client
+ * @author Diana Mejías Hernández
+ * @author Geovanny García Downing
+ * @version 1
+ * @since 1
+ */
+
 public class ClientHandler implements Runnable {
     public String register="";
     private Socket client;
@@ -14,7 +22,14 @@ public class ClientHandler implements Runnable {
     private DataOutputStream out;
     private int name;
 
-
+    /**
+     * Creates the ClientHandler with a specific client
+     * @param clientSocket, the client it needs to handle
+     * @param name, the client's name
+     * @param in, information the ClientHandle receive
+     * @param out, information the ClientHandle send
+     * @throws IOException
+     */
     public ClientHandler(Socket clientSocket, int name, DataInputStream in, DataOutputStream out) throws IOException {
         this.client = clientSocket;
         this.name = name;
@@ -42,6 +57,13 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    /**
+     * Creates the csv archive that registers each request
+     * @param cliente, client's name
+     * @param operation, the registered operation
+     * @param result, the registered result
+     * @throws IOException
+     */
     public void makeCSV(String cliente, String operation, String result) {
         try {
             String currentPath = Paths.get("").toAbsolutePath().normalize().toString();
@@ -69,18 +91,22 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    /**
+     * It turns an infix expression to postfix expression
+     * @param exp, the infix expression
+     * @return A string representing the postfix expression
+     */
     static String infixToPostfix(String exp) {
-        // initializing empty String for result
+        // empty String for result
         String result = new String("");
 
-        // initializing empty stack
+        // empty stack
         Stack<Character> operators = new Stack<>();
 
         for (int i = 0; i < exp.length(); i++) {
             char c = exp.charAt(i);
 
-            // If the scanned character is an
-            // operand, add it to output.
+            // found operand
             int newPosition = i;
             if (Character.isLetterOrDigit(c)) {
                 for (int n = i; n < exp.length(); n++) {
@@ -94,13 +120,11 @@ public class ClientHandler implements Runnable {
                 }
                 i = newPosition - 1;
                 result += " ";
-                // If the scanned character is an '(',
-                // push it to the stack.
+                // found  '(' push it to the stack.
             } else if (c == '(') {
                 operators.push(c);
 
-                //  If the scanned character is an ')',
-                // pop and output from the stack
+                //  Found  ')', pop stack
                 // until an '(' is encountered.
             } else if (c == ')') {
                 while (!operators.isEmpty() && operators.peek() != '(') {
@@ -108,7 +132,7 @@ public class ClientHandler implements Runnable {
                 }
                 operators.pop();
             } else {
-                while (!operators.isEmpty() && Prec(c) <= Prec(operators.peek())) {
+                while (!operators.isEmpty() && Priotity(c) <= Priotity(operators.peek())) {
                     result += operators.pop();
                     result += " ";
                 }
@@ -125,7 +149,12 @@ public class ClientHandler implements Runnable {
         return result;
     }
 
-    static int Prec(char operator) {
+    /**
+     * It returns the priority of the operator
+     * @param operator, the operator to analyze
+     * @return An integer representing the operator's priority
+     */
+    static int Priotity(char operator) {
         if (operator == '+' || operator == '-') {
             return 1;
         } else if (operator == '*' || operator == '/' || operator == '%') {
@@ -134,22 +163,38 @@ public class ClientHandler implements Runnable {
         return -1;
     }
 
-
+    /**
+     * Represents a node, contains information
+     * @author Diana Mejías Hernández
+     * @version 1
+     * @since 1
+     */
     //Node class BinaryTree
     public class Node {
         String data;
         Node left;
         Node right;
 
-        //Constructor
+        /**
+         * Creates the node adding the information and its references
+         * @param value, the data added to the node
+         */
         Node(String value) {
             this.data = value;
             this.left = this.right = null;
         }
     }
 
+    /**
+     * Represents the expression binary tree
+     * @author Geovanny García Downing
+     * @author Diana Mejías Hernández
+     * @version 1
+     * @since 1
+     */
     //Creating BinaryTree
     public class BinaryTree {
+
         boolean foundOperator(char op) {
             if (op == '+' || op == '-' || op == '*' || op == '/' || op == '%') {
                 return true;
@@ -157,6 +202,12 @@ public class ClientHandler implements Runnable {
                 return false;
             }
         }
+
+        /**
+         * Created the expression binary tree
+         * @param exp, A string representing the expression used to create the binary tree
+         * @return A Node that represents the tree's root
+         */
         public Node BinaryTree(String exp){
 
             Stack <Node> nodeStack = new Stack<>();
@@ -203,7 +254,12 @@ public class ClientHandler implements Runnable {
             return node;
         }
     }
-    // evaluate binary tress
+
+    /**
+     * Evaluates the expression binary tree
+     * @param root, A Node representing the tree's root
+     * @return An integer that represents the result of the tree's evaluation
+     */
     public static int evalBinaryTree(Node root){
         if(root == null){
             return 0;

@@ -8,6 +8,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * Represents the interface
+ * @author Geovanny García Downing
+ * @version 1
+ * @since 1
+ */
 public class Interface extends JFrame implements KeyListener {
     int openParen=0, closeParen=0;
     String frozenText, request="null";
@@ -36,6 +42,9 @@ public class Interface extends JFrame implements KeyListener {
     JTextField result;
     JLabel title;
 
+    /**
+     * Constructor of the interface class
+     */
     public Interface(){
         setTitle("Calculator");
         setVisible(true);
@@ -52,7 +61,7 @@ public class Interface extends JFrame implements KeyListener {
         operation.addKeyListener(this);
         pane.add(operation);
 
-        //Definición de botones
+        //Button definition
         key1 = new Button(this,"1",10,60,0);
         key2 = new Button(this,"2",60,60,0);
         key3 = new Button(this,"3",110,60,0);
@@ -75,6 +84,10 @@ public class Interface extends JFrame implements KeyListener {
         keyEq = new Button(this,"=",210,210,20);
     }
 
+    /**
+     * Recognized a keyTyped event in the interface
+     * @param e, the event's name
+     */
     @Override
     public void keyTyped(KeyEvent e) {
         char key = e.getKeyChar();
@@ -107,6 +120,10 @@ public class Interface extends JFrame implements KeyListener {
         }
     }
 
+    /**
+     * Recognized a keyPressed event
+     * @param e, event's name
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == 8){
@@ -122,15 +139,34 @@ public class Interface extends JFrame implements KeyListener {
         }
     }
 
+    /**
+     * Recognized a keyReleased event
+     * @param e, event's name
+     */
     @Override
     public void keyReleased(KeyEvent e) {
     }
 }
 
+/**
+ * Represents the button in the interface
+ * @author Geovanny García Downing
+ * @version 1
+ * @since 1
+ */
 class Button implements ActionListener {
     JButton obj;
     Interface cInterface;
     String opText;
+
+    /**
+     * Button's constructor
+     * @param clientInterface, the interface
+     * @param text, the text in button
+     * @param x, coords in x
+     * @param y, coords in y
+     * @param scale, button size
+     */
        public Button(Interface clientInterface, String text, int x, int y, int scale){
            cInterface=clientInterface;
            opText=text;
@@ -141,6 +177,10 @@ class Button implements ActionListener {
            cInterface.pane.add(obj);
        }
 
+    /**
+     * Action preformed by each button
+     * @param e, event's name
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
            if (e.getSource()==obj){
