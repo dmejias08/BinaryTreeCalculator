@@ -22,7 +22,6 @@ public class Server {
 
     public static void main(String[] args) throws IOException {
         server = new ServerSocket(port);
-//        while (true){
         try {
             while(true) {
                 System.out.println("Server waiting for connection...");
@@ -33,26 +32,9 @@ public class Server {
                 DataInputStream in = new DataInputStream(client.getInputStream());
                 DataOutputStream out = new DataOutputStream(client.getOutputStream());
                 contClients++;
-//                while(true){
-//                    String command = in.readUTF();
-//                    System.out.println("Command: "+command);
-//                    if (command.equals("exit")){
-//                        out.writeUTF("Exit");
-//                        server.close();
-//                        client.close();
-//                        in.close();
-//                        out.close();
-//                        System.out.println("Closing connection");
-//                        break;
-//                    }
-//                    String response = "Hola";
-//                    out.writeUTF(response);
-//                }
                 ClientHandler clientThread = new ClientHandler(client, contClients, in, out);
                 clients.add(clientThread);
                 limit.execute(clientThread);
-//                Thread threadNew = new Thread(clientThread);
-//                threadNew.start();
             }
         }catch (Exception e){
             server.close();

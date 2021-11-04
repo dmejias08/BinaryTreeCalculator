@@ -39,10 +39,12 @@ public class Interface extends JFrame implements KeyListener {
     public Interface(){
         setTitle("Calculator");
         setVisible(true);
-        setSize(300,400 );
+        setSize(300,300);
         pane = new JPanel();
         this.getContentPane().add(pane);
         pane.setLayout(null);
+        setResizable(false);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         operation = new JTextField(20);
         operation.setSize(270, 40);
@@ -82,17 +84,15 @@ public class Interface extends JFrame implements KeyListener {
             if (!operation.getText().equals("")) {
                 last = operation.getText().charAt(operation.getCaretPosition()-1);
             }
-            if (key>=42 && key<=47 && key!=45 && (last>=48 || last==41)) {
-
+            if (((key>=42 && key<=47 && key!=45) || key==37) && (last>=48 || last==41)) {
             } else if (key==41 && openParen>closeParen && last>=48) {
                 closeParen++;
-            } else if (key==40 && ((last<=47 && last>41) || last==0 || last==40)){
+            } else if (key==40 && (((last<=47 && last>41) || last==37) || last==0 || last==40)){
                 openParen++;
             } else if (key==45 && (last>=48 || last==41 || last==0) ) {
-            } else if (key==37 && last>=48) {
-            } else if (key>=48 && last!=41 && last!=37){
+            } else if (key>=48 && last!=41){
             } else {
-                if (key>=42 && key<=47 && last<=47 && last>=42){
+                if (((key>=42 && key<=47) || key==37) && ((last<=47 && last>=42) || last==37)){
                     try {
                         operation.getDocument().remove(operation.getCaretPosition()-1, 1);
                         operation.getDocument().insertString(operation.getCaretPosition(), ""+key,null);
@@ -175,23 +175,22 @@ class Button implements ActionListener {
                } else {
                    if (key>=37 && key<=57 && key!=44 && key!=46 && key!=38 && key!=39) {
                        try {
-                           if (key >= 42 && key <= 47 && key != 45 && (last >= 48 || last == 41)) {
+                           if (((key>=42 && key<=47 && key!=45) || key==37) && (last>=48 || last==41)) {
                                cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
                            } else if (key == 41 && cInterface.openParen > cInterface.closeParen && last >= 48) {
                                cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
                                cInterface.closeParen++;
-                           } else if (key == 40 && ((last <= 47 && last > 41) || last == 0 || last == 40)) {
+                           } else if (key == 40 && (((last <= 47 && last > 41) || last==37) || last == 0 || last == 40)) {
                                cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
                                cInterface.openParen++;
                            } else if (key == 45 && (last >= 48 || last == 41 || last == 0)) {
                                cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
-                           } else if (key == 37 && last >= 48) {
-                               cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
-                           } else if (key >= 48 && last != 41 && last != 37) {
+                           } else if (key >= 48 && last != 41) {
                                cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
                            } else {
-                               if (key >= 42 && key <= 47 && last <= 47 && last >= 42) {
+                               if (((key >= 42 && key <= 47) || key==37) && ((last<=47 && last>=42) || last==37)) {
                                    cInterface.operation.getDocument().remove(cInterface.operation.getCaretPosition()-1, 1);
+                                   cInterface.operation.getDocument().insertString(cInterface.operation.getCaretPosition(), ""+key,null);
                                }
                            }
                        } catch (BadLocationException ex){

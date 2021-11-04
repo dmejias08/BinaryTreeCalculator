@@ -1,13 +1,15 @@
 package com.proyecto2;
 
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Client  {
+    public String CSV;
     private static Interface interfac;
     private static DataInputStream in;
     private static DataOutputStream out;
@@ -30,7 +32,7 @@ public class Client  {
                     if (request.charAt(0)=='-'){
                         request="0"+request;
                     }
-                    out.writeUTF("("+request+")");
+                    out.writeUTF(request);
                     String response = in.readUTF();
                     interfac.operation.setText(response);
                     interfac.frozenText="";

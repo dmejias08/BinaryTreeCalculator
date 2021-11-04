@@ -2,9 +2,13 @@ package com.proyecto2;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Stack;
 
 public class ClientHandler implements Runnable {
+    public String register="";
     private Socket client;
     private DataInputStream in;
     private DataOutputStream out;
@@ -22,16 +26,46 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
             while (true) {
-                //Verificar función de este código
                 String command = in.readUTF();
-                System.out.println("Command: " + command);
                 BinaryTree tree = new BinaryTree();
-                int result = evalBinaryTree(tree.BinaryTree(infixToPostfix(command)));
+                int result = evalBinaryTree(tree.BinaryTree(infixToPostfix("("+command+")")));
                 String response = String.valueOf(result);
+                makeCSV(String.valueOf(name-1),command,response);
                 out.writeUTF(response);
             }
+        } catch (Exception e) {
+            try {
+                in.close();
+                out.close();
+            } catch (IOException ex) {
+            }
+        }
+    }
+
+    public void makeCSV(String cliente, String operation, String result) {
+        try {
+            String currentPath = Paths.get("").toAbsolutePath().normalize().toString();
+            File newFolder = new File(currentPath);
+            boolean dirCreated = newFolder.mkdir();
+
+            // get current time
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-M-dd_HH-mm-ss");
+            LocalDateTime now = LocalDateTime.now();
+            String fileName = "Reporte_Cliente_"+ cliente + ".csv";
+
+            // Whatever the file path is.
+            File statText = new File(currentPath + "/" + fileName);
+            FileOutputStream os = new FileOutputStream(statText);
+            OutputStreamWriter osw = new OutputStreamWriter(os);
+            Writer w = new BufferedWriter(osw);
+
+            register+=operation+","+result+","+dtf.format(now) +"\n";
+
+            w.write(register);
+
+            w.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Problem writing to the file " + e);
         }
     }
 
@@ -81,8 +115,6 @@ public class ClientHandler implements Runnable {
                 operators.push(c);
             }
         }
-        System.out.println("Pasé por aquí");
-        System.out.println(result);
         // pop all the operators from the stack
         while (!operators.isEmpty()) {
             if (operators.peek() == '(') {
@@ -90,14 +122,13 @@ public class ClientHandler implements Runnable {
             }
             result += operators.pop() + " ";
         }
-        System.out.println(result);
         return result;
     }
 
     static int Prec(char operator) {
         if (operator == '+' || operator == '-') {
             return 1;
-        } else if (operator == '*' || operator == '/') {
+        } else if (operator == '*' || operator == '/' || operator == '%') {
             return 2;
         }
         return -1;
@@ -120,7 +151,7 @@ public class ClientHandler implements Runnable {
     //Creating BinaryTree
     public class BinaryTree {
         boolean foundOperator(char op) {
-            if (op == '+' || op == '-' || op == '*' || op == '/') {
+            if (op == '+' || op == '-' || op == '*' || op == '/' || op == '%') {
                 return true;
             } else {
                 return false;
@@ -174,9 +205,6 @@ public class ClientHandler implements Runnable {
     }
     // evaluate binary tress
     public static int evalBinaryTree(Node root){
-        System.out.println("Root");
-        System.out.println(root.data);
-
         if(root == null){
             return 0;
         }
@@ -190,11 +218,13 @@ public class ClientHandler implements Runnable {
         if (root.data.equals("+")){
             result = evalBinaryTree(root.right) + evalBinaryTree(root.left);
         } else if (root.data.equals("-")){
-            result = evalBinaryTree(root.right) - evalBinaryTree(root.left); ;
+            result = evalBinaryTree(root.right) - evalBinaryTree(root.left);
         } else if (root.data.equals("*")){
-            result = evalBinaryTree(root.right) * evalBinaryTree(root.left);;
+            result = evalBinaryTree(root.right) * evalBinaryTree(root.left);
         } else if (root.data.equals("/")) {
-            result = evalBinaryTree(root.right) / evalBinaryTree(root.left);;
+            result = evalBinaryTree(root.right) / evalBinaryTree(root.left);
+        } else if (root.data.equals("%")) {
+            result = evalBinaryTree(root.right) % evalBinaryTree(root.left);
         } else {
             result = Integer.valueOf(root.data);
         }
