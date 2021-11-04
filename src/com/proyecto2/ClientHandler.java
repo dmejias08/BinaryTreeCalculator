@@ -22,6 +22,7 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
             while (true) {
+                //Verificar función de este código
                 String command = in.readUTF();
                 System.out.println("Command: " + command);
                 if (command.equals("exit")) {
@@ -32,15 +33,15 @@ public class ClientHandler implements Runnable {
                     System.out.println("Closing connection");
                     break;
                 }
-                String response = infixToPostfix(command);
+                BinaryTree tree = new BinaryTree();
+                int result = evalBinaryTree(tree.BinaryTree(infixToPostfix(command)));
+                String response = String.valueOf(result);
                 out.writeUTF(response);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 
     static String infixToPostfix(String exp) {
         // initializing empty String for result
