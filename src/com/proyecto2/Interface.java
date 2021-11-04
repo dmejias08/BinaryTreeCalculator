@@ -148,7 +148,10 @@ class Button implements ActionListener {
                char key = opText.charAt(0);
                char last = 0;
                if (!cInterface.operation.getText().equals("")) {
-                   last = cInterface.operation.getText().charAt(cInterface.operation.getCaretPosition()-1);
+                   try {
+                       last = cInterface.operation.getText().charAt(cInterface.operation.getCaretPosition() - 1);
+                   } catch (Exception n){
+                   }
                }
                if (obj.getText()=="DEL"){
                    if (last==40){

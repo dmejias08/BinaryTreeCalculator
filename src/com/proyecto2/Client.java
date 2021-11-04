@@ -23,24 +23,19 @@ public class Client  {
 
         try {
             while (true) {
-                System.out.println(">");
                 String request = interfac.request;
-//                out.writeUTF(request);
-                System.out.println("Request: " + request);
                 if (request.equals("null")) {
-                    System.out.println("Request is null");
-                    continue;
+                    System.out.print("");
                 } else {
-                    out.writeUTF(request);
-                    String response = in.readUTF();
-                    if(response.equals("Exit")){
-                        server.close();
-                        in.close();
-                        out.close();
-                        System.out.println("Closing connection");
-                        break;
+                    if (request.charAt(0)=='-'){
+                        request="0"+request;
                     }
-                    System.out.println("Response: " + response);
+                    out.writeUTF("("+request+")");
+                    String response = in.readUTF();
+                    interfac.operation.setText(response);
+                    interfac.frozenText="";
+                    interfac.operation.setCaretPosition(response.length());
+                    interfac.request="null";
                 }
 
             }

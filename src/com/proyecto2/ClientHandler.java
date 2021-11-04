@@ -25,14 +25,6 @@ public class ClientHandler implements Runnable {
                 //Verificar función de este código
                 String command = in.readUTF();
                 System.out.println("Command: " + command);
-                if (command.equals("exit")) {
-                    out.writeUTF("Exit");
-                    client.close();
-                    in.close();
-                    out.close();
-                    System.out.println("Closing connection");
-                    break;
-                }
                 BinaryTree tree = new BinaryTree();
                 int result = evalBinaryTree(tree.BinaryTree(infixToPostfix(command)));
                 String response = String.valueOf(result);
@@ -89,7 +81,8 @@ public class ClientHandler implements Runnable {
                 operators.push(c);
             }
         }
-
+        System.out.println("Pasé por aquí");
+        System.out.println(result);
         // pop all the operators from the stack
         while (!operators.isEmpty()) {
             if (operators.peek() == '(') {
