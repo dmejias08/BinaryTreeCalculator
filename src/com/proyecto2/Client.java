@@ -4,6 +4,12 @@ package com.proyecto2;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * Represents the clients
+ * @author Diana Mejías Hernández
+ * @version 1
+ * @since 1
+ */
 public class Client  {
     private static Interface interfac;
     private static DataInputStream in;
@@ -11,6 +17,11 @@ public class Client  {
     private static Socket server;
     public static final int port = 9090;
 
+    /**
+     * Runs the client and send its request, also read the server's response
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         interfac = new Interface();
         interfac.repaint();

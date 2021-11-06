@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Represents the server
+ * @author Diana Mejías Hernández
+ * @version 1
+ * @since 1
+ */
 public class Server {
     public static ServerSocket server;
     public static Socket client;
@@ -18,8 +24,11 @@ public class Server {
     public static int contClients = 1;
     private static ExecutorService limit = Executors.newFixedThreadPool(20);
 
-
-
+    /**
+     * Runs the server that assigns a client to a ClientHandler
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         server = new ServerSocket(port);
         try {
