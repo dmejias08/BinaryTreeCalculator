@@ -33,8 +33,6 @@ public class Interface extends JFrame implements KeyListener {
     Button keyParent1;
     Button keyParent2;
     JTextField operation;
-    JTextField result;
-    JLabel title;
 
     public Interface(){
         setTitle("Calculator");
@@ -168,7 +166,11 @@ class Button implements ActionListener {
                    cInterface.operation.setText(null);
                } else if (obj.getText()=="="){
                    if (cInterface.openParen==cInterface.closeParen){
-                       cInterface.request= cInterface.operation.getText();
+                       if (last>=48 || last==41) {
+                           cInterface.request = cInterface.operation.getText();
+                       } else {
+                           JOptionPane.showMessageDialog(null,"Error de sintaxis");
+                       }
                    } else {
                        JOptionPane.showMessageDialog(null, "La cantidad de parentesis abiertos no calza con los cerrados");
                    }

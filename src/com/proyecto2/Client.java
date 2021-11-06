@@ -3,13 +3,8 @@ package com.proyecto2;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 
 public class Client  {
-    public String CSV;
     private static Interface interfac;
     private static DataInputStream in;
     private static DataOutputStream out;
